@@ -1,24 +1,7 @@
-// import { parse } from "node-html-parser";
-
-// const data = await fetch("https://truthsocial.com/discover").then((res) =>
-//   res.text(),
-// );
-
-// console.log("data", data);
-
-// const root = parse(data);
-
-// // console.log(root);
-
-// const elements = root.querySelectorAll("[data-markup]");
-
-// console.log(elements);
-
-// elements.forEach((el) => {
-//   console.log(el.textContent);
-// });
 import puppeteer from "puppeteer-extra";
 import StealthPlugin from "puppeteer-extra-plugin-stealth";
+import { deployTokenToPumpFun } from "./pumpfun";
+import { AgentRuntime, IAgentRuntime } from "@ai16z/eliza";
 
 puppeteer.use(StealthPlugin());
 
@@ -27,19 +10,36 @@ const page = await browser.newPage();
 
 await page.setViewport({ width: 1280, height: 720 });
 
-await page.goto("https://truthsocial.com/discover", {
-  waitUntil: "networkidle2",
-  timeout: 100000,
-});
-// const htmlPage = await page.waitForSelector("p");
-await page.screenshot({ path: "screenshot.png" });
+const populalPersonalities = [
+  "@realDonaldTrump",
+  "@JDVance1",
+  "@Charliekirk",
+  "@DonaldJTrumpJr",
+];
 
-// console.log(await htmlPage?.text());
+const parseComments = async (person: string) => {
+  await page.goto(`https://truthsocial.com/${person}/replies`, {
+    waitUntil: "networkidle2",
+    timeout: 100000,
+  });
+  // const htmlPage = await page.waitForSelector("p");
+  await page.screenshot({ path: "screenshot.png" });
 
-const elements = await page.$$eval("[data-markup]", (elems) =>
-  elems.map((elem) => elem.outerHTML),
-);
+  // console.log(await htmlPage?.text());
 
-console.log(elements);
+  const replies = (await page.$$eval("[data-reply]", (elems) =>
+    elems.map((elem) => elem.outerHTML),
+  )) as any;
 
-await browser.close();
+  replies.forEach((reply: { likes: string[]; owner: string }) => {
+    if (reply.likes.length >= 10) {
+      deployTokenToPumpFun(
+        AgentRuntime as unknown as IAgentRuntime,
+        reply.owner,
+        "truth",
+      );
+    }
+  });
+
+  await browser.close();
+};

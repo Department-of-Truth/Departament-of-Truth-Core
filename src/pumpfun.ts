@@ -1,4 +1,4 @@
-import { IAgentRuntime, Memory } from "@ai16z/eliza";
+import { elizaLogger, IAgentRuntime, Memory } from "@ai16z/eliza";
 import { PumpFunAgentKit } from "pumpfun-kit";
 
 export function getSakAgent(runtime: IAgentRuntime) {
@@ -26,3 +26,18 @@ export async function getOrCreateGoal(
     return goal[0];
   }
 }
+
+export const deployTokenToPumpFun = async (
+  runtime: IAgentRuntime,
+  owner: string,
+  token: string,
+) => {
+  const agent = getSakAgent(runtime);
+  await agent.deployToken(token, owner);
+  elizaLogger.info("token deployed successfuly!");
+};
+
+export const getPumpFunToken = async (runtime: IAgentRuntime) => {
+  const agent = getSakAgent(runtime);
+  return agent.getToken();
+};
