@@ -36,7 +36,7 @@ const parseComments = async (person: string) => {
       deployTokenToPumpFun(
         AgentRuntime as unknown as IAgentRuntime,
         reply.owner,
-        "truth",
+        "dot",
       );
     }
   });
