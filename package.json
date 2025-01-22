@@ -12,10 +12,15 @@
   "license": "ISC",
   "dependencies": {
     "@ai16z/eliza": "^0.1.6",
+    "@solana/web3.js": "^1.98.0",
+    "bs58": "^6.0.0",
     "node-html-parser": "^7.0.1",
     "puppeteer": "^24.1.0",
     "puppeteer-extra": "^3.3.6",
     "puppeteer-extra-plugin-stealth": "^2.11.2",
     "pumpfun-kit": "^2.11.3"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0"
   }
 }
